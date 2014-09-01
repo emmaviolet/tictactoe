@@ -7,6 +7,13 @@ class Game < ActiveRecord::Base
   belongs_to :player_1, class_name: "User", :foreign_key => 'player_1_id'
   belongs_to :player_2, class_name: "User", :foreign_key => 'player_2_id'
 
+  def users
+      users = []
+      users << player_1
+      users << player_2
+      return users
+  end
+
   def player_moves(n)
     moves.where("player_number = #{n}").map(&:square)
   end
@@ -23,6 +30,15 @@ class Game < ActiveRecord::Base
     self.result = "player_2" if player_win?(2)
     self.result = "draw" if self.result == 'active' && self.moves.count >= 9
     return self.result
+  end
+
+  def next_player
+    if moves.empty? || moves.sort.last.player_number == 2
+      @next_player = player_1_id
+    else
+      @next_player = player_2_id
+    end
+    return @next_player
   end
 
 end

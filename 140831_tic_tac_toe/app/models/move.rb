@@ -29,14 +29,9 @@ class Move < ActiveRecord::Base
   end
 
   def player_allowed?
-    if player_number == 1 && game.player_1_id == current_user
+    if game.next_player == current_user
       return true
-    elsif player_number == 2 && game.player_2_id == current_user
-      return true
-    else
-      return false
     end
   end
-
 
 end

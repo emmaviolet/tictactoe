@@ -7,8 +7,12 @@ class User < ActiveRecord::Base
     validates :email, uniqueness: { case_sensitive: false }
     validates :password, presence: true, on: :create
 
-    has_many :games, :foreign_key => 'player_1_id'
-    has_many :games, :foreign_key => 'player_2_id'
+    has_many :games_player_1, :class_name => 'Game', :foreign_key => 'player_1_id'
+    has_many :games_player_2, :class_name => 'Game', :foreign_key => 'player_2_id'
+
+    def games
+        games_player_1 + games_player_2 - (games_player_1 & games_player_2)
+    end
 
     def role?(role_to_compare)
       self.role.to_s == role_to_compare.to_s
