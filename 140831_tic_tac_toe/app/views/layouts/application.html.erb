@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TicTacToe</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+  <div id = "nav_background">
+    <div id = "login_bar">
+      <% if current_user %>
+      <% @user = current_user %>
+      <div class = "user_name"> <%= current_user.email %> </div>
+      <div class = "user_account"> <%= link_to 'Account', user_path(@user) %> </div>
+      <div class = "user_login"> <%= link_to 'Logout', logout_path %> </div>
+      <% else %>
+      <div class = "user_name"> Guest </div>
+      <div class = "user_account"> <%= link_to 'Create Account', new_user_path %> </div>
+      <div class = "user_login"> <%= link_to 'Login', new_session_path %> </div>
+      <% end %>
+    </div>
+  </div>
+
+<%= yield %>
+
+</body>
+</html>

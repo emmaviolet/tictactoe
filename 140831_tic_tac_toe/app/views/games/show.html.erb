@@ -1,0 +1,29 @@
+<% case @game.result %>
+<% when "active" %>
+
+<% if @game.moves.count.even? %>
+  <% @move_player = 1 %>
+<% else %>
+  <% @move_player = 2 %>
+<% end %>
+
+<% for n in 1..9 do %>
+<% if Move.where(game_id: @game.id, square: n).empty? %>
+<%= link_to n, new_move_path(game_id: @game, square: n, player_number: @move_player) %>
+
+
+<% end %>
+<% end %>
+
+
+<% when "player_1" %>
+Player 1 has won!
+
+<% when "player_2" %>
+Player 2 has won!
+
+<% when "draw" %>
+It's a draw!
+
+<% end %>
+

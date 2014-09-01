@@ -1,0 +1,13 @@
+Who do you want to play with?
+
+<%= form_for @game do |g| %>
+<% friends = User.all %>
+<% friends.each do |f| %>
+<%= radio_button(:player_2_id, :player_2_id, "#{f}") %>
+<%= label :player_2_id, f.email %><br>
+<% end %>
+
+<%= g.submit "Choose friend" %>
+
+
+<% end %>
