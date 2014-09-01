@@ -1,0 +1,22 @@
+Who should go first?
+
+<%= form_for @game, url: games_new_first_user_path, method: :put do |g| %>
+
+<% case @game.game_type %>
+<% when "friend" %>
+  <% ["Me", "Them"].each do |f| %>
+    <%= radio_button(:player, :player, f) %>
+    <%= label :player, f %><br>
+  <% end %>
+<% when "computer" %>
+  <% ["Me", "Computer"].each do |f| %>
+    <%= radio_button(:player, :player, f) %>
+    <%= label :player, f %><br>
+  <% end %>
+<% end %>
+
+<%= g.hidden_field :game_id, :value => @game.id %>
+
+<%= g.submit "Start" %>
+
+<% end %>

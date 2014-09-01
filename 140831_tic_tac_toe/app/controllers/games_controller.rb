@@ -23,6 +23,7 @@ load_and_authorize_resource
       @game.game_type = 'computer'
       @game.result = 'active'
       @game.save
+      redirect_to games_new_first_user_path(id: @game.id)
     end
 
     if params[:game_type] == 'friend'
@@ -39,12 +40,43 @@ load_and_authorize_resource
   end
 
   def friend_update
-    @game = Game.find(params[:id])
-    @game.update_attributes(params[:game])
-      redirect_to @game
-    # @game.player_2_id = params[:player_2_id]
-    # redirect_to @game
+    id = params[:game].values.first.to_i
+    @game = Game.find(id)
+    @game.player_2_id = params[:player_2_id].values.first.to_i
+    @game.save
+    redirect_to games_new_first_user_path(id: @game.id)
   end
+
+  def first_user
+    @game = Game.find(params[:id])
+  end
+
+  def first_user_update
+    id = params[:game].values.first.to_i
+    @game = Game.find(id)
+    case @game.game_type
+    when "friend"
+      if params[:player].values.first.to_s == "Me"
+        @game.player_1_id = current_user.id
+      end
+      if params[:player].values.first.to_s == "Them"
+        @game.player_1_id = @game.player_2_id
+        @game.player_2_id = current_user.id
+      end
+    when "computer"
+      if params[:player].values.first.to_s == "Me"
+        @game.player_1_id = current_user.id
+        @game.player_2_id = 100
+      end
+      if params[:player].values.first.to_s == "Computer"
+        @game.player_1_id = 100
+        @game.player_2_id = current_user.id
+      end
+    end
+    @game.save
+    redirect_to @game
+  end
+
 
   def create
     @game = Game.find(params[:id])
