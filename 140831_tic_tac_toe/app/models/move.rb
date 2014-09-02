@@ -14,14 +14,8 @@ class Move < ActiveRecord::Base
     game.moves.count.even?
   end
 
-  def all_squares
-    [1,2,3,4,5,6,7,8,9]
-  end
-
   def free_squares
-    taken_squares = game.moves.map(&:square)
-    free_squares = all_squares - taken_squares
-    return free_squares
+    game.free_squares
   end
 
   def game_active?

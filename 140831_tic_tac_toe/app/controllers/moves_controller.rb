@@ -8,13 +8,14 @@ load_and_authorize_resource
   def new
     @move = Move.new
     @game = Game.find(params[:game_id])
-    @move = Move.create game_id: @game.id, current_user: current_user.id
-    @move.square = params[:square]
-    @move.player_number = params[:player_number]
+    @move = Move.create game_id: @game.id, current_user: current_user.id, square: params[:square], player_number: params[:player_number]
     @move.save
-
-    @game.result = @game.is_over?
     @game.save
+
+    if @game.game_type == "computer"
+      @game.computer_move
+      @game.save
+    end
 
     redirect_to game_path(@move.game_id)
   end

@@ -19,7 +19,7 @@
   <%= "#{game.result}" %>
   <%= "#{game.player_1.try(:email)}" %>
   <%= "#{game.player_2.try(:email)}" %>
-  <% if game.next_player == @user.id %>
+  <% if game.next_player == @user.id && game.result == "active" %>
   <%= link_to "Play", game_path(game) %>
   <% end %><br>
   <% end %>
