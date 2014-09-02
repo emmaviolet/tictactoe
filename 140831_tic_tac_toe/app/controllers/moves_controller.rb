@@ -12,7 +12,7 @@ load_and_authorize_resource
     @move.save
     @game.save
 
-    if @game.game_type == "computer"
+    if @game.game_type == "computer" && @game.next_player == 3
       @game.computer_move
       @game.save
     end

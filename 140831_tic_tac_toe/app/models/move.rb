@@ -11,19 +11,19 @@ class Move < ActiveRecord::Base
   validates_numericality_of :square, :equal_to => 0, unless: :player_allowed?
 
   def move_even?
-    game.moves.count.even?
+    self.game.moves.count.even?
   end
 
   def free_squares
-    game.free_squares
+    self.game.free_squares
   end
 
   def game_active?
-    game.result == 'active'
+    self.game.result == 'active'
   end
 
   def player_allowed?
-    if game.next_player == current_user
+    if self.game.next_player == current_user
       return true
     end
   end

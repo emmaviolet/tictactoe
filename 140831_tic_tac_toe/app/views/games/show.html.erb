@@ -5,7 +5,7 @@
 
   <% for @n in 1..9 do %>
   <% move = @game.moves.where(square: @n).first %>
-    <%= link_to @n, new_move_path(game_id: @game, square: @n, player_number: @move_player) if move == nil %>
+    <%= link_to @n, new_move_path(game_id: @game.id, square: @n, player_number: @move_player) if move == nil %>
     <%= "O" if move != nil && move.player_number == 1 %>
     <%= "X" if move != nil && move.player_number == 2 %>
   <% end %>
