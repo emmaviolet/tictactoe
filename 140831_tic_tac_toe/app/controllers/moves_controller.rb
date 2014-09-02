@@ -12,37 +12,16 @@ load_and_authorize_resource
     @move.save
     @game.save
 
-    if @game.game_type == "computer" && @game.next_player == 3
+    if @game.game_type == "computer" && @game.next_player == 3 && @game.result == "active"
       @game.computer_move
       @game.save
     end
-
     redirect_to game_path(@move.game_id)
   end
 
   def create
     @move = Move.find(params[:id])
     @move.update_attributes(params[:move])
-  end
-
-  def show
-    @move = Move.find(params[:id])
-  end
-
-  def destroy
-    move = Move.find(params[:id])
-    move.destroy
-    redirect_to moves_path
-  end
-
-  def edit
-    @move = Move.find(params[:id])
-  end
-
-  def update
-    @move = Move.find(params[:id])
-    @move.update_attributes(params[:move])
-      redirect_to @move
   end
 
 end

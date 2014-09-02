@@ -11,7 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140901204744) do
+ActiveRecord::Schema.define(:version => 20140902201255) do
+
+  create_table "friendships", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.integer  "user_id"
+    t.integer  "friend_id"
+    t.string   "email"
+    t.string   "username"
+  end
 
   create_table "games", :force => true do |t|
     t.string   "result"
@@ -20,6 +29,8 @@ ActiveRecord::Schema.define(:version => 20140901204744) do
     t.string   "game_type"
     t.integer  "player_1_id"
     t.integer  "player_2_id"
+    t.integer  "difficulty"
+    t.integer  "board_size"
   end
 
   create_table "moves", :force => true do |t|
@@ -37,6 +48,8 @@ ActiveRecord::Schema.define(:version => 20140901204744) do
     t.string   "role"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+    t.string   "name"
+    t.string   "username"
   end
 
 end

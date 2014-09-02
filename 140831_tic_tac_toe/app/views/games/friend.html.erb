@@ -1,7 +1,8 @@
 Who do you want to play with?
 
 <%= form_for @game, url: games_new_friend_path, method: :put do |g| %>
-  <% User.all.each do |f| %>
+<% @user = User.find(params[:user]) %>
+  <% @user.friends.each do |f| %>
   <%= radio_button(:player_2_id, :player_2_id, f.id) %>
   <%= label :player_2_id, f.email %><br>
 <% end %>
@@ -11,4 +12,5 @@ Who do you want to play with?
 <%= g.submit "Choose friend" %>
 
 <% end %>
-<% end %>
+
+<%= link_to 'Add a Friend', new_friendship_path %>

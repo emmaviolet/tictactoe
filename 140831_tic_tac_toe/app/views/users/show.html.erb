@@ -25,6 +25,14 @@
   <% end %>
 </p>
 
+<p>
+  <b>Friends: <br>
+  <% @user.friends.each do |friend| %>
+  <%= "#{friend.username}" %>
+  <% end %>
+  <%= link_to 'New Friend', new_friendship_path %> |
+</p>
+
 <br>
 <%= link_to 'Edit', edit_user_path(@user) %> |
 
