@@ -12,7 +12,7 @@ load_and_authorize_resource
     @move.save
     @game.save
 
-    if @game.game_type == "computer" && @game.next_player == 3 && @game.result == "active"
+    if @game.game_type == "computer" && @game.next_player == User.find_by_username("Computer") && @game.result == "active"
       @game.computer_move
       @game.save
     end

@@ -7,21 +7,23 @@ load_and_authorize_resource
 
   def new
     @game = Game.new
+    @current_user = current_user
   
     if params[:game_type] == 'pass'
-      @game = Game.create game_type: 'pass', player_1_id: current_user.id, player_2_id: current_user.id, difficulty: 0, result: 'active', board_size: 3
+      @game = Game.create game_type: 'pass', player_2_id: current_user.id
       @game.save
       redirect_to games_new_board_size_path(id: @game.id)
     end
 
     if params[:game_type] == 'computer'
-      @game = Game.create game_type: 'computer', player_1_id: current_user.id, player_2_id: 3, difficulty: 0, result: 'active', board_size: 3
+      @game = Game.create game_type: 'computer'
+      @game.player_2_id = User.find_by_username("Computer").id
       @game.save
       redirect_to games_new_computer_path(id: @game.id)
     end
 
     if params[:game_type] == 'friend'
-      @game = Game.create game_type: 'friend', difficulty: 0, result: 'active', board_size: 3
+      @game = Game.create game_type: 'friend'
       @game.save
       redirect_to games_new_friend_path(id: @game.id, user: current_user)
     end
@@ -65,7 +67,7 @@ load_and_authorize_resource
       @game.player_1_id = @game.player_2_id
       @game.player_2_id = current_user.id
     when "Computer"
-      @game.player_1_id = 3
+      @game.player_1_id = User.find_by_username("Computer").id
       @game.player_2_id = current_user.id
       @game.save
       @game.computer_move

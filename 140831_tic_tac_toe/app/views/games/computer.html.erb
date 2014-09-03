@@ -1,7 +1,7 @@
 How much of a challenge are you after?
 
 <%= form_for @game, url: games_new_computer_path, method: :put do |g| %>
-  <% @game.computer_array.each do |k, v| %>
+  <% @computer_hash.each do |k, v| %>
   <%= radio_button(:difficulty, :difficulty, v) %>
   <%= label :difficulty, k %><br>
 <% end %>

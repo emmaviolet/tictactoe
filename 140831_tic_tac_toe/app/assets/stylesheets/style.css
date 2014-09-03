@@ -1,0 +1,68 @@
+* {
+  text-decoration: none;
+  color: #1C1C1C;
+}
+
+body {
+  font-family: 'Roboto Slab', serif;
+  font-size: 20px;
+  line-height: 150%;
+  background-image: url("http://roseapodaca.com/wp-content/uploads/Tic-Tac-Toe-by-Cecil-Beaton.png");
+}
+
+#login_bar {
+  display: block;
+  width: 100%;
+  background-color: #2E2E2E;
+  border-bottom: 2px solid white;
+  padding: 10px 0px 10px 0px;
+  opacity: 50%;
+}
+
+#login_bar div {
+  display: inline-block;
+  width: 33%;
+  color:  #EEEEEE;
+  text-align: center;
+  opacity: 50%;
+}
+
+#login_bar div a {
+  color: #EEEEEE;
+  text-align: center;
+}
+
+#nav_bar {
+  display: block;
+  width: 960px;
+  margin: auto;
+  background-color: #D7D7D7;
+  border-right: 2px solid black;
+  border-left: 2px solid black;
+  padding: 10px 0px 10px 0px;
+  margin-top: 30px;
+  border-bottom: 2px solid #A1A1A1;
+  border-top: 2px solid black;
+}
+
+#nav_bar div {
+  display: inline-block;
+  width: 220px;
+  color: black;
+  text-align: center;
+}
+
+a:hover {
+  font-weight: bold;
+}
+
+#main {
+  display: block;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
+  width: 960px;
+  margin: auto;
+  background-color: white;
+  min-height: 400px;
+}

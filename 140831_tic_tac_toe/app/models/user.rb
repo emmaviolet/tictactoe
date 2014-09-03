@@ -22,17 +22,6 @@ class User < ActiveRecord::Base
       self.role.to_s == role_to_compare.to_s
     end
 
-    # def friends
-    #     friends = []
-    #     friendships = self.friendships
-    #     friendships.each do |friendship|
-    #         friend = friendship.friend_2 if friendship.friend_1_id == self.id
-    #         friend = friendship.friend_1 if friendship.friend_2_id == self.id
-    #         friends << friend
-    #     end
-    #     return friends
-    # end
-
     before_create :set_role
 
     private

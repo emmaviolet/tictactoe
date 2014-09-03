@@ -1,7 +1,7 @@
 What size board do you want to play on?
 
 <%= form_for @game, url: games_new_board_size_path, method: :put do |g| %>
-  <% @game.board_size_array.each do |k, v| %>
+  <% @board_size_hash.each do |k, v| %>
   <%= radio_button(:board_size, :board_size, v) %>
   <%= label :board_size, k %><br>
 <% end %>
