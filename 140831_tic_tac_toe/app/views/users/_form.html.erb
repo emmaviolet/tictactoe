@@ -1,43 +1,29 @@
-<div class = "form">
-  <div class = "user_block">
+<div id = "user_show_container">
     <%= form_for(@user) do |f| %>
     <% if @user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved</h2>
+
+ <%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved
 
       <ul>
         <% @user.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
         <% end %>
       </ul>
-    </div>
     <% end %>
 
-    <div id = "form_user">
-    <div class="form_name">
-      <div class = "form_label"> <%= f.label :username %></div>
-      <div class = "form_input"> <%= f.text_field :username %></div>
-    </div>
-    <div id = "form_user">
-      <div class="form_name">
-        <div class = "form_label"> <%= f.label :email %></div>
-        <div class = "form_input"> <%= f.text_field :email %></div>
-      </div>
-      <div class="form_name">
-        <div class = "form_label"> <%= f.label :password %></div>
-        <div class = "form_input"><%= f.password_field :password %></div>
-      </div>
-      <div class="form_name">
-        <div class = "form_label"><%= f.label :password_confirmation %></div>
-        <div class = "form_input"><%= f.password_field :password_confirmation %></div>
-      </div>
+<%= f.label :username %>
+<%= f.text_field :username %><br>
 
+<%= f.label :email %>
+<%= f.text_field :email %><br>
 
-      <div class = "submit", id = "form_user">
+<%= f.label :password %>
+<%= f.password_field :password %><br>
+
+<%= f.label :password_confirmation %>
+<%= f.password_field :password_confirmation %><br>
+
         <%= f.submit %>
-      </div>
-      <% end %>
-    </div>
 
-  </div>
+      <% end %>
 </div>

@@ -1,32 +1,42 @@
 class FriendshipsController < ApplicationController
 load_and_authorize_resource
 
+  def index
+    @user = Friendship.find(params[:user_id])
+    @friendships = Friendship.where("user_id = #{@user.id}")
+  end
+
   def new
     @friendship = Friendship.new
-    @friendship = Friendship.create user_id: current_user.id
-    @friendship.save
   end
 
   def create
-   
+   @friendship = Friendship.create user_id: current_user.id, email: params[:friendship][:email], username: params[:friendship][:username]
+   friend_username_id = User.find_by_username(@friendship.username).try(:id )
+   friend_email_id = User.find_by_email(@friendship.email).try(:id)
+   @friendship.friend_id = friend_email_id if friend_email_id
+   @friendship.friend_id = friend_username_id if friend_username_id
+   @friendship.save
+   respond_to do |format|
+     if @friendship.persisted?
+        @new_friendship = Friendship.new
+        @new_friendship = Friendship.create user_id: @friendship.friend_id, friend_id: @friendship.user_id
+        @new_friendship.save
+        format.html { redirect_to user_path(current_user), notice: 'You and are now friends.' }
+     else
+       format.html { render action: "new" }
+     end
+   end
   end
 
-  def update
+  def show
     @friendship = Friendship.find(params[:id])
-    @username = params[:friendship][:username]
-    @email = params[:friendship][:email]
-    if @username != nil
-      @friend = User.find_by_username("#{@username}")
-    end
-    if @username == nil && @email != nil
-      @friend = User.find_by_email("#{@email}")
-    end
-    @friendship.friend_id = @friend.id
-    @friendship.save
-    @new_friendship = Friendship.new
-    @new_friendship = Friendship.create user_id: @friendship.friend_id, friend_id: @friendship.user_id
-    @new_friendship.save
-    redirect_to user_path(current_user)
+  end
+
+  def destroy
+    friendship = Friendship.find(params[:id])
+    friendship.destroy
+    redirect_to user_path
   end
 
 end

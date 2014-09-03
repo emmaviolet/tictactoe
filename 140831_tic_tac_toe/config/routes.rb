@@ -20,6 +20,7 @@ TicTacToe::Application.routes.draw do
  get 'games/new/board_size', to: 'games#board_size'
  put 'games/new/board_size', to: 'games#board_size_update'
 
+ get 'user/friendships/:id', to: 'users#friendships'
  get 'logout', to: 'sessions#destroy'
 
 end

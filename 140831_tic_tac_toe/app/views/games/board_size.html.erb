@@ -1,13 +1,18 @@
-What size board do you want to play on?
+<div id = "user_show_container">
 
+<h1>What size board do you want to play on?</h1>
+<div id = "friends_form">
+  <ul>
 <%= form_for @game, url: games_new_board_size_path, method: :put do |g| %>
-  <% @board_size_hash.each do |k, v| %>
-  <%= radio_button(:board_size, :board_size, v) %>
-  <%= label :board_size, k %><br>
+  <% Game::BOARD_SIZE_HASH.each do |k, v| %>
+  <li><%= radio_button(:board_size, :board_size, v) %>
+  <%= label :board_size, k %></li>
 <% end %>
 
 <%= g.hidden_field :game_id, :value => @game.id %>
 
-<%= g.submit "Choose" %>
+<li><%= g.submit "Choose" %></li></ul>
 
 <% end %>
+<div>
+</div>

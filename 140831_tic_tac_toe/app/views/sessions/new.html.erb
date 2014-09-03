@@ -1,17 +1,13 @@
-<div class = "form">
-  <div id = "user_signin">
+<div id = "user_show_container">
     <%= form_tag sessions_path do %>
 
-      <div class="form_name">
-        <div class="form_label"><%= label_tag :email %></div>
-        <div class="form_input"><%= text_field_tag :email, params[:email] %></div>
-      </div>
-      <div class="form_name">
-        <div class="form_label"><%= label_tag :password %></div>
-        <div class="form_input"><%= password_field_tag :password %></div>
-      </div>
-      <div class="submit"><%= submit_tag "Log in" %></div>
+      <%= label_tag :email %>
+      <%= text_field_tag :email, params[:email] %><br>
+
+      <%= label_tag :password %>
+      <%= password_field_tag :password %><br>
+      
+      <%= submit_tag "Log in" %>
 
     <% end %>
-  </div>
 </div>

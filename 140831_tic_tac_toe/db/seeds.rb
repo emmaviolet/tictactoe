@@ -1,5 +1,4 @@
 Game.delete_all
-Move.delete_all
 Friendship.delete_all
 User.where(role: "member").delete_all
 

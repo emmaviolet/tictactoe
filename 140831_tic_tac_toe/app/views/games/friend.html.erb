@@ -1,16 +1,34 @@
-Who do you want to play with?
+<% if current_user %>
 
+<div id = "user_show_container">
+<h1> Who do you want to play with? </h1>
+
+<div id = "friends_form">
 <%= form_for @game, url: games_new_friend_path, method: :put do |g| %>
+<ul>
 <% @user = User.find(params[:user]) %>
   <% @user.friends.each do |f| %>
-  <%= radio_button(:player_2_id, :player_2_id, f.id) %>
-  <%= label :player_2_id, f.email %><br>
+  <li><%= radio_button(:player_2_id, :player_2_id, f.id) %>
+  <%= label :player_2_id, f.username %><li>
 <% end %>
-
+<ul>
+  </div>
+<br>
 <%= g.hidden_field :game_id, :value => @game.id %>
 
-<%= g.submit "Choose friend" %>
+<div id = "submit_button">
+<%= g.submit "Choose" %>
+</div>
 
 <% end %>
 
-<%= link_to 'Add a Friend', new_friendship_path %>
+<div id = "add_friend">
+<%= link_to 'Add a Friend', new_friendship_path(user_id: @user.id) %>
+</div>
+</div>
+
+<% else %>
+<div id = "user_show_container">
+Sorry, you must be logged in to play against your friends.
+</div>
+<% end %>

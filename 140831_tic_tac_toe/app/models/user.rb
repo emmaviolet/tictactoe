@@ -3,11 +3,11 @@ class User < ActiveRecord::Base
 
     attr_accessible :username, :email, :password, :password_confirmation
 
-    validates :username, presence: true
+    before_validation :set_role, :on => :create
+
+    validates :username, :role, :email, :password, presence: true
     validates :username, uniqueness: { case_sensitive: false }
-    validates :email, presence: true
     validates :email, uniqueness: { case_sensitive: false }
-    validates :password, presence: true, on: :create
 
     has_many :games_player_1, :class_name => 'Game', :foreign_key => 'player_1_id'
     has_many :games_player_2, :class_name => 'Game', :foreign_key => 'player_2_id'
@@ -18,11 +18,48 @@ class User < ActiveRecord::Base
         games_player_1 + games_player_2
     end
 
+    def games_won
+        games_won = []
+        self.games.each do |game|
+            if game.game_type != "pass" && game.player_1_id == self.id && game.result == "player_1"
+                games_won << game
+            end
+            if game.game_type != "pass" && game.player_2_id == self.id && game.result == "player_2"
+                games_won << game
+            end
+        end
+        count = games_won.count
+        return count
+    end
+
+    def games_lost
+        games_lost = []
+        self.games.each do |game|
+            if game.game_type != "pass" && game.player_1_id == self.id && game.result == "player_2"
+                games_lost << game
+            end
+            if game.game_type != "pass" && game.player_2_id == self.id && game.result == "player_1"
+                games_lost << game
+            end
+        end
+        count = games_lost.count
+        return count
+    end
+
+    def games_drawn
+        games_drawn = []
+        self.games.each do |game|
+            if game.game_type != "pass" && game.result == "draw"
+                games_drawn << game
+            end
+        end
+        count = games_drawn.count
+        return count
+    end
+
     def role?(role_to_compare)
       self.role.to_s == role_to_compare.to_s
     end
-
-    before_create :set_role
 
     private
     def set_role

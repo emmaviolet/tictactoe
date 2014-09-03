@@ -26,15 +26,13 @@ class Game < ActiveRecord::Base
 
   # HARDCODED VARIABLES AND METHODS BEGIN
 
-  def get_variables
-    @game_types = ["computer", "friend", "pass"]
-    @game_results = ["player_1", "player_2", "draw", "active"]
-    @game_board_sizes = [3, 4, 5]
-    @game_difficulties = [0, 1, 2]
-    @number_players = 2
-    @computer_hash = Hash["Easy", 1, "Hard", 2]
-    @board_size_hash = Hash["3x3", 3, "4x4", 4, "5x5", 5]
-  end
+  GAME_TYPES = ["computer", "friend", "pass"]
+  GAME_RESULTS = ["player_1", "player_2", "draw", "active"]
+  GAME_BOARD_SIZES = [3, 4, 5]
+  GAME_DIFFICULTIES = [0, 1, 2]
+  NUMBER_PLAYERS = 2
+  COMPUTER_HASH = Hash["Easy", 1, "Hard", 2]
+  BOARD_SIZE_HASH = Hash["3x3", 3, "4x4", 4, "5x5", 5]
 
   def player_number
     player_number = 1 if self.moves.count.even?
@@ -53,6 +51,20 @@ class Game < ActiveRecord::Base
     return ["Me", "Them"] if self.game_type == "friend"
   end
 
+  def game_square_row(n)
+    row = "top" if (n <= self.board_size)
+    row = "bottom" if (n > (self.board_size * (self.board_size-1)))
+    row = "middle" if (n > self.board_size && n <= (self.board_size * (self.board_size-1)))
+    return row
+  end
+
+  def game_square_column(n)
+    column = "left" if (n == 1 || n % self.board_size == 1)
+    column = "right" if (n % self.board_size == 0)
+    column = "middle" if (n != 1 && n % self.board_size != 1 && n % self.board_size != 0)
+    return column
+  end
+
   # HARDCODED VARIABLES AND METHODS END
 
   # CALLBACKS BEGIN
@@ -61,7 +73,6 @@ class Game < ActiveRecord::Base
     self.difficulty = 0
     self.result = "active"
     self.board_size = 3
-    self.player_1_id = @current_user.id
   end
 
   def is_over?
@@ -75,43 +86,37 @@ class Game < ActiveRecord::Base
   # VALIDATIONS BEGIN
 
   def player_1_actual
-    get_variables
     unless self.player_1_id == nil || User.all.include?(self.player_1)
         errors.add(:no_player_1, "Sorry, Player 1 is not a user we recognise.") 
     end
   end
 
   def player_2_actual
-    get_variables
     unless self.player_2_id == nil || User.all.include?(self.player_2)
         errors.add(:no_player_2, "Sorry, Player 2 is not a user we recognise.") 
     end
   end
 
   def game_type_exists
-    get_variables
-    unless @game_types.include?(self.game_type)
+    unless Game::GAME_TYPES.include?(self.game_type)
       errors.add(:no_game_type, "Sorry, that game type does not exist.") 
     end
   end
 
   def game_result
-    get_variables
-    unless @game_results.include?(self.result)
+    unless Game::GAME_RESULTS.include?(self.result)
       errors.add(:no_result, "Sorry, that game result is not valid. Please list the game result as active to start play.") 
     end
   end
 
   def game_board_size
-    get_variables
-    unless @game_board_sizes.include?(self.board_size)
+    unless Game::GAME_BOARD_SIZES.include?(self.board_size)
         errors.add(:no_result, "Sorry, that board size is not valid. Please enter a board size of 3, 4, or 5 to play.") 
       end
   end
 
   def game_difficulties
-    get_variables
-    unless self.game_type != "computer" || @game_difficulties.include?(self.difficulty)
+    unless self.game_type != "computer" || Game::GAME_DIFFICULTIES.include?(self.difficulty)
         errors.add(:no_player_2, "Sorry, please choose a difficulty level of 0, 1, or 2.") 
     end
   end
@@ -217,7 +222,7 @@ class Game < ActiveRecord::Base
   end
 
   def next_player
-    if moves.empty? || moves.sort.last.player_number == @number_players
+    if moves.empty? || moves.sort.last.player_number == Game::NUMBER_PLAYERS
       @next_player = player_1_id
     else
       @next_player = player_2_id
@@ -258,10 +263,13 @@ class Game < ActiveRecord::Base
     @square_move = wins_now.first[:square] if wins_now.any?
     @square_move = block_win_moves.first if wins_now.empty? && block_win_moves.any?
     @square_move = free_squares.first if wins_now.empty? && block_win_moves.empty? && free_squares.length == 1
-    if wins_now.empty? && block_win_moves.empty? && free_squares.length != 1
+    if wins_now.empty? && block_win_moves.empty? && free_squares.length != 1 && possible_wins.any?
       sorted_options = next_move_options.sort_by { |h| [h[:num], h[:freq] ] }
       best_move = sorted_options.last[:square]
       @square_move = best_move
+    end
+    if possible_wins.empty?
+      @square_move = computer_move_easy
     end
     return @square_move
   end
