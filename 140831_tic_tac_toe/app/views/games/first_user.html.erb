@@ -1,18 +1,24 @@
 <div id = "user_show_container">
-<h1>Who should go first?</h1>
+  <h1>Who should go first?
+  </h1>
 
-<div id = "friends_form">
-<ul>
-<%= form_for @game, url: games_new_first_user_path, method: :put do |g| %>
-  <% @game.first_array.each do |f| %>
-    <li><%= radio_button(:player, :player, f) %>
-    <%= label :player, f %></li>
-  <% end %>
+  <div id = "friends_form">
+    <ul>
+      <%= form_for @game, url: games_new_first_user_path, method: :put do |g| %>
+      <% @game.first_array.each do |f| %>
+      <li>
+        <%= radio_button(:player, :player, f) %>
+        <%= label :player, f %>
+      </li>
+      <% end %>
 
-<%= g.hidden_field :game_id, :value => @game.id %>
+      <%= g.hidden_field :game_id, :value => @game.id %>
 
-<li><%= g.submit "Start" %></li></ul>
+      <li>
+        <%= g.submit "Start" %>
+      </li>
+    </ul>
 
-<% end %>
-</div>
+    <% end %>
+  </div>
 </div>

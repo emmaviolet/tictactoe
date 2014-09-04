@@ -20,9 +20,15 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+gem 'pg'
+
 group :development do
+  gem 'pry-rails'
+  gem 'pry-byebug'
+  gem 'pry-stack_explorer'
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'letter_opener'
 end
 
 gem 'jquery-rails'

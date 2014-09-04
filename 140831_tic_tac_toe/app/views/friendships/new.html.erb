@@ -1,34 +1,36 @@
 <div id = "user_show_container">
 
-<h1>Enter an email or username to add a friend</h1>
+  <h1>Enter an email or username to add a friend</h1>
 
-    <%= form_for @friendship do |f| %>
-    
-    <% if @friendship.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@friendship.errors.count, "error") %> prohibited this friendship from being saved</h2>
+  <%= form_for @friendship do |f| %>
 
-      <ul>
-        <% @friendship.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-    <% end %>
+  <% if @friendship.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@friendship.errors.count, "error") %> prohibited this friendship from being saved</h2>
 
-    <div id = "friends_form">
-      <ul>
+    <ul>
+      <% @friendship.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
 
-<li><%= f.label :username %>
-<%= f.text_field :username %></li><br>
+  <div id = "friends_form">
+    <ul>
 
-<li><%= f.label :email %>
-<%= f.text_field :email %></li><br>
+      <li><%= f.label :username %>
+        <%= f.text_field :username %>
+      </li><br>
 
-        <li><%= f.submit "Add friend" %></li>
+      <li><%= f.label :email %>
+        <%= f.text_field :email %>
+      </li><br>
+
+      <li><%= f.submit "Add friend" %>
+      </li>
 
       <% end %>
-</ul>
-    </div></div>
-
-<%#= link_to 'Invite Someone New', new_friendship_path %>
+    </ul>
+  </div>
+</div>

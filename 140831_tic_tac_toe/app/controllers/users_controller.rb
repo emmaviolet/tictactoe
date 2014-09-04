@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-load_and_authorize_resource
+  load_and_authorize_resource
 
   def index
     @users = User.all
@@ -33,6 +33,7 @@ load_and_authorize_resource
     @user = User.new(params[:user])
     respond_to do |format|
       if @user.save
+        UserMailer.registration_confirmation(@user).deliver
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json { render json: @user, status: :created, location: @user }
       else

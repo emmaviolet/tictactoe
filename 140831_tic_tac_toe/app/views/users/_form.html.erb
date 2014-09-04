@@ -1,29 +1,29 @@
 <div id = "user_show_container">
-    <%= form_for(@user) do |f| %>
-    <% if @user.errors.any? %>
+  <%= form_for(@user) do |f| %>
+  <% if @user.errors.any? %>
 
- <%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved
+  <%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved
 
-      <ul>
-        <% @user.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-        <% end %>
-      </ul>
+  <ul>
+    <% @user.errors.full_messages.each do |msg| %>
+    <li><%= msg %></li>
     <% end %>
+  </ul>
+  <% end %>
 
-<%= f.label :username %>
-<%= f.text_field :username %><br>
+  <%= f.label :username %>
+  <%= f.text_field :username %><br>
 
-<%= f.label :email %>
-<%= f.text_field :email %><br>
+  <%= f.label :email %>
+  <%= f.text_field :email %><br>
 
-<%= f.label :password %>
-<%= f.password_field :password %><br>
+  <%= f.label :password %>
+  <%= f.password_field :password %><br>
 
-<%= f.label :password_confirmation %>
-<%= f.password_field :password_confirmation %><br>
+  <%= f.label :password_confirmation %>
+  <%= f.password_field :password_confirmation %><br>
 
-        <%= f.submit %>
+  <%= f.submit %>
 
-      <% end %>
+  <% end %>
 </div>

@@ -1,11 +1,14 @@
 <div id = "game_index_container">
 
-<%= link_to 'Play Computer', new_game_path(game_type: 'computer') %><br>
+  <%= link_to 'Play Computer', new_game_path(game_type: 'computer') %>
+  <br>
 
-<%= link_to 'Pass and Play', new_game_path(game_type: 'pass') %><br>
+  <%= link_to 'Pass and Play', new_game_path(game_type: 'pass') %>
+  <br>
 
-<% if current_user && current_user.role != "guest" %>
-<%= link_to 'Play a Friend', new_game_path(game_type: 'friend') %><br>
-<% end %>
+  <% if current_user && current_user.role != "guest" %>
+  <%= link_to 'Play a Friend', new_game_path(game_type: 'friend') %>
+  <br>
+  <% end %>
 
 </div = "game_index_container">
