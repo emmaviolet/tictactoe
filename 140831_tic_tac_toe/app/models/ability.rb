@@ -14,19 +14,30 @@ class Ability
       can :manage, Friendship do |friendship_to_check|
         friendship_to_check.try(:user_id) == user.id || friendship_to_check.try(:user_id) == nil
       end
+      can :create, User
+      can :manage, User do |user_to_check|
+        user_to_check.try(:created_at) == nil || user_to_check.try(:created_at) <= Time.now
+      end
+      can :manage, Game do |game_to_check|
+        game_to_check.try(:player_1_id) == user.id || game_to_check.try(:player_2_id) == user.id || game_to_check.try(:player_1_id) == nil || game_to_check.try(:player_2_id) == nil
+      end
+      can :manage, Move do |move_to_check|
+        game_to_check = move_to_check.try(:game)
+        game_to_check.try(:player_1_id) == user.id || game_to_check.try(:player_2_id) == user.id || game_to_check.try(:player_1_id) == nil || game_to_check.try(:player_2_id) == nil
+      end
     end
 
-    can :create, User
-    can :manage, User do |user_to_check|
-      user_to_check.try(:created_at) == nil || user_to_check.try(:created_at) <= Time.now
+    if user.role? :guest
+      can :manage, Game do |game_to_check|
+        (game_to_check.try(:player_1_id) == user.id || game_to_check.try(:player_2_id) == user.id || game_to_check.try(:player_1_id) == nil || game_to_check.try(:player_2_id) == nil) && game_to_check.game_type != "friend"
+      end
+      can :manage, Move do |move_to_check|
+        game_to_check = move_to_check.try(:game)
+        (game_to_check.try(:player_1_id) == user.id || game_to_check.try(:player_2_id) == user.id || game_to_check.try(:player_1_id) == nil || game_to_check.try(:player_2_id) == nil) && game_to_check.game_type != "friend"
+      end
+      can :create, User
     end
-    can :manage, Game do |game_to_check|
-      game_to_check.try(:player_1_id) == user.id || game_to_check.try(:player_2_id) == user.id || game_to_check.try(:player_1_id) == nil || game_to_check.try(:player_2_id) == nil || user.id == nil
-    end
-    can :manage, Move do |move_to_check|
-      game_to_check = move_to_check.try(:game)
-      game_to_check.try(:player_1_id) == user.id || game_to_check.try(:player_2_id) == user.id || game_to_check.try(:player_1_id) == nil || game_to_check.try(:player_2_id) == nil
-    end
+      can :create, User
   end
 
 end

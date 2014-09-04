@@ -10,7 +10,6 @@ class GamesController < ApplicationController
   
     if params[:game_type] == 'pass'
       @game = Game.create game_type: 'pass', player_1_id: current_or_guest_user.id, player_2_id: current_or_guest_user.id
-      raise
       @game.save
       redirect_to games_new_board_size_path(id: @game.id)
     end

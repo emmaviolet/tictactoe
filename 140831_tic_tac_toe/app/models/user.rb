@@ -8,11 +8,18 @@ class User < ActiveRecord::Base
     validates :username, :role, :email, :password, presence: true
     validates :username, uniqueness: { case_sensitive: false }
     validates :email, uniqueness: { case_sensitive: false }
+    validate :username_not_guest
 
     has_many :games_player_1, :class_name => 'Game', :foreign_key => 'player_1_id'
     has_many :games_player_2, :class_name => 'Game', :foreign_key => 'player_2_id'
     has_many :friendships
     has_many :friends, :class_name => 'User', through: :friendships
+
+    def username_not_guest
+        unless self.username.downcase[0..4] != "guest"
+            errors.add(:no_guest_user, "Sorry, your username cannot begin with the letters 'guest'.") 
+        end
+    end
 
     def games
         games_player_1 + games_player_2
@@ -63,7 +70,11 @@ class User < ActiveRecord::Base
 
     private
     def set_role
-        self.role = :member
+        if self.username[0..4] == "guest"
+            self.role = :guest
+        else
+            self.role = :member
+        end
     end
 
 end

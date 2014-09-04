@@ -31,7 +31,6 @@ load_and_authorize_resource
 
   def create
     @user = User.new(params[:user])
-
     respond_to do |format|
       if @user.save
         format.html { redirect_to @user, notice: 'User was successfully created.' }
