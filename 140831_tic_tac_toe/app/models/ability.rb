@@ -27,17 +27,15 @@ class Ability
       end
     end
 
-    if user.role? :guest
       can :manage, Game do |game_to_check|
-        (game_to_check.try(:player_1_id) == user.id || game_to_check.try(:player_2_id) == user.id || game_to_check.try(:player_1_id) == nil || game_to_check.try(:player_2_id) == nil) && game_to_check.game_type != "friend"
+        (game_to_check.try(:player_1_id) == user.id || game_to_check.try(:player_2_id) == user.id || game_to_check.try(:player_1_id) == nil || game_to_check.try(:player_2_id) == nil) && game_to_check.try(:game_type) != "friend"
       end
       can :manage, Move do |move_to_check|
         game_to_check = move_to_check.try(:game)
-        (game_to_check.try(:player_1_id) == user.id || game_to_check.try(:player_2_id) == user.id || game_to_check.try(:player_1_id) == nil || game_to_check.try(:player_2_id) == nil) && game_to_check.game_type != "friend"
+        (game_to_check.try(:player_1_id) == user.id || game_to_check.try(:player_2_id) == user.id || game_to_check.try(:player_1_id) == nil || game_to_check.try(:player_2_id) == nil) && game_to_check.try(:game_type) != "friend"
       end
       can :create, User
-    end
-      can :create, User
+
   end
 
 end

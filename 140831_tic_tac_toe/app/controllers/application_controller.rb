@@ -53,7 +53,7 @@ class ApplicationController < ActionController::Base
     end
 
     def destroy_old_guests
-      guests = Users.where(role: "guest")
+      guests = User.where(role: "guest")
       guests.each do |guest|
         if guest.updated_at < (Time.now - 1.day)
           guest.destroy

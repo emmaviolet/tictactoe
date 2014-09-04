@@ -27,12 +27,13 @@ class Game < ActiveRecord::Base
   # HARDCODED VARIABLES AND METHODS BEGIN
 
   GAME_TYPES = ["computer", "friend", "pass"]
-  GAME_RESULTS = ["player_1", "player_2", "draw", "active"]
-  GAME_BOARD_SIZES = [3, 4, 5]
+  GAME_RESULTS = ["player_1", "player_2", "draw", "active", "expanding"]
+  GAME_BOARD_SIZES = [3, 4, 5, 6]
   GAME_DIFFICULTIES = [0, 1, 2]
   NUMBER_PLAYERS = 2
   COMPUTER_HASH = Hash["Easy", 1, "Hard", 2]
-  BOARD_SIZE_HASH = Hash["3x3", 3, "4x4", 4, "5x5", 5]
+  BOARD_SIZE_HASH = Hash["Simple", 3, "Expanding", 6]
+  WIN_LENGTH = 3
 
   def player_number
     player_number = 1 if self.moves.count.even?
@@ -51,17 +52,29 @@ class Game < ActiveRecord::Base
     return ["Me", "Them"] if self.game_type == "friend"
   end
 
+  def find_board_size
+    if self.board_size != 6
+      return self.board_size
+    end
+    if self.board_size == 6 && (self.result == "active" || self.moves.count < 9)
+      return 3
+    end
+    if self.board_size == 6 && (self.result == "expanding" || self.moves.count >= 9)
+      return 4
+    end
+  end
+
   def game_square_row(n)
-    row = "top" if (n <= self.board_size)
-    row = "bottom" if (n > (self.board_size * (self.board_size-1)))
-    row = "middle" if (n > self.board_size && n <= (self.board_size * (self.board_size-1)))
+    row = "top" if (n <= self.find_board_size)
+    row = "bottom" if (n > (self.find_board_size * (self.find_board_size-1)))
+    row = "middle" if (n > self.find_board_size && n <= (self.find_board_size * (self.find_board_size-1)))
     return row
   end
 
   def game_square_column(n)
-    column = "left" if (n == 1 || n % self.board_size == 1)
-    column = "right" if (n % self.board_size == 0)
-    column = "middle" if (n != 1 && n % self.board_size != 1 && n % self.board_size != 0)
+    column = "left" if (n == 1 || n % self.find_board_size == 1)
+    column = "right" if (n % self.find_board_size == 0)
+    column = "middle" if (n != 1 && n % self.find_board_size != 1 && n % self.find_board_size != 0)
     return column
   end
 
@@ -76,9 +89,13 @@ class Game < ActiveRecord::Base
   end
 
   def is_over?
+    unless player_win?(1) && player_win?(2)
+      self.expand_board if self.board_size == 6 && self.moves.count == 9 
+    end
+    self.result = "expanding" if self.board_size == 6 && self.moves.count >= 9
     self.result = "player_1" if player_win?(1)
     self.result = "player_2" if player_win?(2)
-    self.result = "draw" if self.result == "active" && self.moves.count >= self.all_squares.count
+    self.result = "draw" if (self.result == "active" || self.result == "expanding") && self.moves.count >= self.all_squares.count  
   end
 
   # CALLBACKS END
@@ -111,7 +128,7 @@ class Game < ActiveRecord::Base
 
   def game_board_size
     unless Game::GAME_BOARD_SIZES.include?(self.board_size)
-        errors.add(:no_result, "Sorry, that board size is not valid. Please enter a board size of 3, 4, or 5 to play.") 
+        errors.add(:no_result, "Sorry, that board size is not valid. Please enter a board size of 3, 4, 5, or 6 to play.") 
       end
   end
 
@@ -145,7 +162,7 @@ class Game < ActiveRecord::Base
 
   def all_squares
     all_squares = []
-    n = self.board_size
+    n = self.find_board_size
     for x in 1..(n*n)
       all_squares << x
     end
@@ -157,13 +174,25 @@ class Game < ActiveRecord::Base
   # WIN COMBINATIONS BEGIN
 
   def wins
-    n = self.board_size
-    wins = (row_wins(n) + column_wins(n) + diagonal_wins(n))
+    n = self.find_board_size
+    streaks = (row_streaks(n) + column_streaks(n) + diagonal_streaks(n))
+    wins = streaks_to_wins(streaks, n, 0) + diagonal_wins(n)
     return wins
   end
 
-  def row_wins(n)
-    row_wins = []
+  def streaks_to_wins(streaks, n, x)
+    wins = []
+    streaks.each do |streak|
+      for y in 0..(n-Game::WIN_LENGTH)
+        win = streak[(x+y), (n+y)]
+          wins << win
+        end
+      end
+    return wins
+  end
+
+  def row_streaks(n)
+    row_streaks = []
     for x in 0..(n-1)
       y = (x*n)
       row = []
@@ -171,13 +200,13 @@ class Game < ActiveRecord::Base
         square = y+z
         row << square
       end
-      row_wins << row
+      row_streaks << row
     end
-    return row_wins
+    return row_streaks
   end
 
-  def column_wins(n)
-    column_wins = []
+  def column_streaks(n)
+    column_streaks = []
     for x in 1..n
       column = []
       for y in 0..(n-1)
@@ -185,25 +214,37 @@ class Game < ActiveRecord::Base
         square = x+z
         column << square
       end
-      column_wins << column
+      column_streaks << column
     end
-    return column_wins
+    return column_streaks
+  end
+
+  def diagonal_streaks(n)
+    diagonal_streaks = []
+    diagonal_streaks << diagonal_streak(n,1,(n+1))
+    diagonal_streaks << diagonal_streak(n,n,(n-1))
+    return diagonal_streaks
   end
 
   def diagonal_wins(n)
-    diagonal_wins = []
-    diagonal_wins << diagonal_win(n,1,(n+1))
-    diagonal_wins << diagonal_win(n,n,(n-1))
-    return diagonal_wins
+    if n == 3
+      return []
+    end
+    if n == 4
+      return [[3, 6, 9], [8, 11, 14], [2, 7, 12], [5, 10, 15]]
+    end
+    if n == 5
+      return [[3, 7, 13], [4, 8, 12], [8, 12, 16], [10, 14, 18], [14, 18, 22], [15, 19, 23], [3, 9, 15], [2, 8, 14], [8, 14, 20], [6, 12, 18], [12, 18, 24], [11, 17, 23]]
+    end
   end
 
-  def diagonal_win(n,i,y)
-    diagonal_win = [i]
+  def diagonal_streak(n,i,y)
+    diagonal_streak = [i]
     (n-1).times do
       i = i + y
-      diagonal_win << i
+      diagonal_streak << i
     end
-    return diagonal_win
+    return diagonal_streak
   end
 
   # WIN COMBINATIONS END
@@ -212,7 +253,7 @@ class Game < ActiveRecord::Base
 
   def player_win?(n)
     self.wins.each do |win| 
-      return true if (player_moves("#{n}") & win).count == self.board_size
+      return true if (player_moves("#{n}") & win).count == Game::WIN_LENGTH
     end
     return false
   end
@@ -234,6 +275,25 @@ class Game < ActiveRecord::Base
     taken_squares = moves.map(&:square)
     free_squares = all_squares - taken_squares
     return free_squares
+  end
+
+  def expand_board
+    if self.board_size == 6
+      self.moves.each do |move|
+        square_number = move.square
+        if square_number <= 3
+          move.square = square_number + 4
+        elsif square_number > 3 && square_number <= 6
+          move.square = square_number + 5
+        else
+          move.square = square_number + 6
+        end
+        move.save(:validate => false)
+      end
+    end
+    if self.game_type == "computer" && self.next_player == User.find_by_username("Computer").id
+      computer_move
+    end
   end
 
   # STATE OF PLAY END
@@ -259,23 +319,32 @@ class Game < ActiveRecord::Base
     return self.free_squares.shuffle.sample
   end
 
+  def winning_move
+    wins_now.first[:square]
+  end
+
+  def blocking_move
+    block_win_moves.first
+  end
+
+  def last_square_move
+    free_squares.first
+  end
+
+  def sorted_move
+    next_move_options.sort_by { |h| [h[:num], h[:freq] ] }.last[:square]
+  end
+
   def computer_move_hard
-    @square_move = wins_now.first[:square] if wins_now.any?
-    @square_move = block_win_moves.first if wins_now.empty? && block_win_moves.any?
-    @square_move = free_squares.first if wins_now.empty? && block_win_moves.empty? && free_squares.length == 1
-    if wins_now.empty? && block_win_moves.empty? && free_squares.length != 1 && possible_wins.any?
-      sorted_options = next_move_options.sort_by { |h| [h[:num], h[:freq] ] }
-      best_move = sorted_options.last[:square]
-      @square_move = best_move
-    end
-    if possible_wins.empty?
-      @square_move = computer_move_easy
-    end
-    return @square_move
+    return winning_move if wins_now.any? 
+    return blocking_move if block_win_moves.any?
+    return last_square_move if free_squares.length == 1
+    return sorted_move if next_move_options.any?
+    return computer_move_easy
   end
 
   def wins_now
-    n = self.board_size
+    n = self.find_board_size
     wins_now = moves_hash(n, n)
     return wins_now
   end
@@ -294,7 +363,7 @@ class Game < ActiveRecord::Base
   end
 
   def next_move_options
-    x = self.board_size-1
+    x = self.find_board_size-1
     next_move_options = moves_hash(1, x)
     next_move_options.each do |hash|
       s = hash[:square]
@@ -337,7 +406,7 @@ class Game < ActiveRecord::Base
 
   def opponent_wins
     opponent_wins = []
-    n = self.board_size-1
+    n = self.find_board_size-1
     self.wins.each do |win|
       if (win & player_moves("#{other_player_number}")).length == n
         if (win & player_moves("#{player_number}")).empty?

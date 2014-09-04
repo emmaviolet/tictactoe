@@ -28,7 +28,7 @@ class Move < ActiveRecord::Base
   end
 
   def game_active
-    unless self.game.result == 'active'
+    unless self.game.result == 'active' || self.game.result == 'expanding'
       errors.add(:result, "Sorry, that game is no longer active.") 
     end 
   end

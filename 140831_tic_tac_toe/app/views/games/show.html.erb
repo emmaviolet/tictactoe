@@ -6,17 +6,17 @@
   <% @game.all_squares.each do |n| %>
   <% move = @game.moves.where(square: "#{n}").first %>
 
-  <% if @game.board_size == 3 %>
+  <% if @game.find_board_size == 3 %>
     <div class="game_show_square row_<%=@game.game_square_row(n)%> column_<%=@game.game_square_column(n)%>", style="width: 128px; height: 128px">
   <% end %>
-  <% if @game.board_size == 4 %>
+  <% if @game.find_board_size == 4 %>
     <div class="game_show_square row_<%=@game.game_square_row(n)%> column_<%=@game.game_square_column(n)%>", style="width: 96px; height: 96px">
   <% end %>
-  <% if @game.board_size == 5 %>
+  <% if @game.find_board_size == 5 %>
     <div class="game_show_square row_<%=@game.game_square_row(n)%> column_<%=@game.game_square_column(n)%>", style="width: 76.8px; height: 76.8px">
   <% end %>
 
-    <%= link_to "", new_move_path(game_id: @game.id, square: "#{n}", player_number: @move_player) if move == nil && @game.result == "active" %>
+    <%= link_to "", new_move_path(game_id: @game.id, square: "#{n}", player_number: @move_player) if move == nil && (@game.result == "active" || @game.result == "expanding") %>
     <span> <%= "" if move == nil && @game.result != "active" %>
       <%= "O" if move != nil && move.player_number == 1 %>
     <%= "X" if move != nil && move.player_number == 2 %> </span>
@@ -44,7 +44,7 @@
 <% end %>
 <% end %>
 
-  <% if @game.result == "active" %>
+  <% if @game.result == "active" || @game.result == "expanding" %>
   <% if @game.game_type == "pass" %>
      <%= "It's Player 1's turn!" if @game.moves.empty? || @game.moves.sort.last.player_number == 2 %>
      <%= "It's Player 2's turn!" if @game.moves.any? && @game.moves.sort.last.player_number == 1 %>

@@ -4,7 +4,7 @@
 
 <%= link_to 'Pass and Play', new_game_path(game_type: 'pass') %><br>
 
-<% if current_user.role != "guest" %>
+<% if current_user && current_user.role != "guest" %>
 <%= link_to 'Play a Friend', new_game_path(game_type: 'friend') %><br>
 <% end %>
 
