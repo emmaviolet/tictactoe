@@ -89,7 +89,7 @@ class Game < ActiveRecord::Base
   end
 
   def is_over?
-    unless player_win?(1) && player_win?(2)
+    unless player_win?(1) || player_win?(2)
       self.expand_board if self.board_size == 6 && self.moves.count == 9 
     end
     self.result = "expanding" if self.board_size == 6 && self.moves.count >= 9
