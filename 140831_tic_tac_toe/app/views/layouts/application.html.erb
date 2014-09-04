@@ -6,15 +6,11 @@
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
   <link href='http://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
-  <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
   <div id = "login_bar">
-    <% if current_user %>
+    <% if current_user.username[0..4] != "guest" %>
     <% @user = current_user %>
     <div class = "user_name"> <%= current_user.username %> </div>
     <div class = "user_account"> <%= link_to 'Account', user_path(@user) %> </div>

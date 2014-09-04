@@ -36,7 +36,7 @@ load_and_authorize_resource
   def destroy
     friendship = Friendship.find(params[:id])
     friendship.destroy
-    redirect_to user_path
+    redirect_to root_path
   end
 
 end

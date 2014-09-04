@@ -9,13 +9,13 @@ class ApplicationController < ActionController::Base
     redirect_to root_path, alert: 'Sorry, you can\'t access that page'
   end
 
-  private
     def current_or_guest_user
       if current_user
         if session[:guest_user_id]
           logging_in
           guest_user.destroy
           session[:guest_user_id] = nil
+          session[:user_id] = current_user.id
         end
         current_user
       else
@@ -23,6 +23,7 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    private
     def guest_user
       @cached_guest_user ||= User.find(session[:guest_user_id] ||= create_guest_user.id)
 
@@ -44,10 +45,11 @@ class ApplicationController < ActionController::Base
     end
 
     def create_guest_user
-      u = User.create(:username => "guest", :email => "guest_#{Time.now.to_i}#{rand(100)}", :password => "password", :password_confirmation => "password")
+      u = User.create(:username => "guest#{Time.now.to_i}#{rand(100)}", :email => "guest_#{Time.now.to_i}#{rand(100)}", :password => "password", :password_confirmation => "password")
       u.save!(:validate => false)
       session[:guest_user_id] = u.id
-      u
+      session[:user_id] = u.id
+      return u
     end
 
   def current_user
