@@ -32,7 +32,6 @@ class Game < ActiveRecord::Base
   GAME_DIFFICULTIES = [0, 1, 2]
   NUMBER_PLAYERS = 2
   COMPUTER_HASH = Hash["Easy", 1, "Hard", 2]
-  BOARD_SIZE_HASH = Hash["Simple", 3, "Large", 5, "Expanding", 6]
 
   def player_number
     player_number = 1 if self.moves.count.even?
@@ -51,7 +50,7 @@ class Game < ActiveRecord::Base
   end
 
   def win_length
-    if self.board_size == 5
+    if self.find_board_size == 5
       return 4 
     else
       return 3
@@ -77,7 +76,7 @@ class Game < ActiveRecord::Base
       return 3
     end
     if self.board_size == 6 && (self.result == "expanding" || self.moves.count >= 9)
-      return 4
+      return 5
     end
   end
 
@@ -107,9 +106,9 @@ class Game < ActiveRecord::Base
 
   def is_over?
     unless player_win?(1) && player_win?(2)
+      self.result = "expanding" if self.board_size == 6 && self.moves.count >= 9
       self.expand_board if self.board_size == 6 && self.moves.count == 9 
     end
-    self.result = "expanding" if self.board_size == 6 && self.moves.count >= 9
     self.result = "player_1" if player_win?(1)
     self.result = "player_2" if player_win?(2)
     self.result = "draw" if (self.result == "active" || self.result == "expanding") && self.moves.count >= self.all_squares.count
@@ -310,11 +309,11 @@ class Game < ActiveRecord::Base
       self.moves.each do |move|
         square_number = move.square
         if square_number <= 3
-          move.square = square_number + 4
-        elsif square_number > 3 && square_number <= 6
-          move.square = square_number + 5
-        else
           move.square = square_number + 6
+        elsif square_number > 3 && square_number <= 6
+          move.square = square_number + 8
+        else
+          move.square = square_number + 10
         end
         move.save(:validate => false)
       end

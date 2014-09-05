@@ -63,6 +63,8 @@
     <div id = "user_show_friends_link"><%= link_to 'New Friend', new_friendship_path %>
     </div>
     <div id = "user_show_friend_names">
+      <% if @user.friendships.any? %>
+      <% if @user.friendships.count > 1 %>
 
       <% first_friendship_array = [] %>
       <% first_friendship_array << @user.friendships.first %>
@@ -72,10 +74,21 @@
       <% @friendship = friendship %>
       <% if @friendship.friend != nil && @friendship.friend != "" %>
       <%= link_to "#{@friendship.friend.username},  ", friendship_path(@friendship) %>
-      <% end %>
-      <% end %>
       and <%= link_to "#{first_friendship.friend.username}", friendship_path(first_friendship) %>
+      <% end %>
+      <% end %>
+      <% end %>
 
+      <% if @user.friendships.count == 1 %>
+      <% friendships = @user.friendships.all %>
+      <% friendships.each do |friendship| %>
+      <% @friendship = friendship %>
+      <% if @friendship.friend != nil && @friendship.friend != "" %>
+      <%= link_to "#{@friendship.friend.username}", friendship_path(@friendship) %>
+      <% end %>
+      <% end %>
+      <% end %>
+      <% end %>
     </div>
   </div>
 
