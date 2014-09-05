@@ -74,9 +74,9 @@
       <% @friendship = friendship %>
       <% if @friendship.friend != nil && @friendship.friend != "" %>
       <%= link_to "#{@friendship.friend.username},  ", friendship_path(@friendship) %>
+      <% end %>
+      <% end %>
       and <%= link_to "#{first_friendship.friend.username}", friendship_path(first_friendship) %>
-      <% end %>
-      <% end %>
       <% end %>
 
       <% if @user.friendships.count == 1 %>
