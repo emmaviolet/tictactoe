@@ -47,7 +47,13 @@ class GamesController < ApplicationController
     @game = Game.find(params[:game].values.first.to_i)
     @game.difficulty = params[:difficulty].values.first.to_i
     @game.save
-    redirect_to games_new_board_size_path(id: @game.id)
+    if @game.difficulty != 2
+      redirect_to games_new_board_size_path(id: @game.id)
+    else 
+      @game.board_size = 3
+      @game.save
+      redirect_to games_new_first_user_path(id: @game.id)
+    end
   end
 
   def first_user

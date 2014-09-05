@@ -34,7 +34,7 @@
       <% user_games = (@user.games).uniq %>
       <% user_games.each do |game| %>
       <tr>
-        <% if game.result == "active" && game.game_type != "pass" && game.moves.count > 0 %>
+        <% if (game.result == "active" || game.result == "expanding") && game.moves.count > 0 %>
         <td><%= link_to "Game #{game.id}", game_path(game) %>
         </td>
         <td><%= "Pass & Play" if "#{game.game_type}" == 'pass' %>

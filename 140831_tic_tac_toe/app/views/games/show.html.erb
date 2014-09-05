@@ -56,6 +56,13 @@
   <% end %>
 
   <% if @game.result == "active" || @game.result == "expanding" %>
+  <% if @game.find_board_size == 3 || @game.find_board_size == 4 %>
+  Find 3 in a row to win.<br>
+  <% end %>
+  <% if @game.find_board_size == 5 %>
+  Find 4 in a row to win.<br>
+  <% end %>
+
   <% if @game.game_type == "pass" %>
   <%= "It's Player 1's turn!" if @game.moves.empty? || @game.moves.sort.last.player_number == 2 %>
   <%= "It's Player 2's turn!" if @game.moves.any? && @game.moves.sort.last.player_number == 1 %>

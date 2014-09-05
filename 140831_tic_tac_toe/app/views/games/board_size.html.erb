@@ -5,7 +5,7 @@
   <div id = "friends_form">
     <ul>
       <%= form_for @game, url: games_new_board_size_path, method: :put do |g| %>
-      <% Game::BOARD_SIZE_HASH.each do |k, v| %>
+      <% @game.board_size_hash.each do |k, v| %>
       <li>
         <%= radio_button(:board_size, :board_size, v) %>
         <%= label :board_size, k %>
@@ -21,4 +21,5 @@
 
     <% end %>
   </div>
+
 </div>

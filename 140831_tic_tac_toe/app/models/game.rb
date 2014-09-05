@@ -32,13 +32,30 @@ class Game < ActiveRecord::Base
   GAME_DIFFICULTIES = [0, 1, 2]
   NUMBER_PLAYERS = 2
   COMPUTER_HASH = Hash["Easy", 1, "Hard", 2]
-  BOARD_SIZE_HASH = Hash["Simple", 3, "Expanding", 6]
-  WIN_LENGTH = 3
+  BOARD_SIZE_HASH = Hash["Simple", 3, "Large", 5, "Expanding", 6]
 
   def player_number
     player_number = 1 if self.moves.count.even?
     player_number = 2 if self.moves.count.odd?
     return player_number
+  end
+
+  def board_size_hash
+    if self.game_type == "computer" && self.difficulty == 2
+      return Hash["Simple", 3]
+    elsif self.game_type == "computer" && self.difficulty == 1
+      return Hash["Simple", 3, "Large", 5]
+    else
+      return Hash["Simple", 3, "Large", 5, "Expanding", 6]
+    end
+  end
+
+  def win_length
+    if self.board_size == 5
+      return 4 
+    else
+      return 3
+    end
   end
 
   def other_player_number
@@ -95,7 +112,7 @@ class Game < ActiveRecord::Base
     self.result = "expanding" if self.board_size == 6 && self.moves.count >= 9
     self.result = "player_1" if player_win?(1)
     self.result = "player_2" if player_win?(2)
-    self.result = "draw" if (self.result == "active" || self.result == "expanding") && self.moves.count >= self.all_squares.count  
+    self.result = "draw" if (self.result == "active" || self.result == "expanding") && self.moves.count >= self.all_squares.count
   end
 
   # CALLBACKS END
@@ -182,13 +199,24 @@ class Game < ActiveRecord::Base
 
   def streaks_to_wins(streaks, n, x)
     wins = []
-    streaks.each do |streak|
-      for y in 0..(n-Game::WIN_LENGTH)
-        win = streak[(x+y), (n+y)]
+    if n != 5
+      streaks.each do |streak|
+        for y in 0..1
+          win = streak[(x+y), (3+y)]
           wins << win
         end
       end
-    return wins
+      return wins
+    end
+    if n == 5
+      streaks.each do |streak|
+        for y in 0..1
+          win = streak[(x+y), (4+y)]
+          wins << win
+        end
+      end
+      return wins
+    end
   end
 
   def row_streaks(n)
@@ -234,7 +262,7 @@ class Game < ActiveRecord::Base
       return [[3, 6, 9], [8, 11, 14], [2, 7, 12], [5, 10, 15]]
     end
     if n == 5
-      return [[3, 7, 13], [4, 8, 12], [8, 12, 16], [10, 14, 18], [14, 18, 22], [15, 19, 23], [3, 9, 15], [2, 8, 14], [8, 14, 20], [6, 12, 18], [12, 18, 24], [11, 17, 23]]
+      return [[4, 8, 12, 16], [10, 14, 18, 22], [2, 8, 14, 20], [6, 12, 18, 24]]
     end
   end
 
@@ -253,7 +281,7 @@ class Game < ActiveRecord::Base
 
   def player_win?(n)
     self.wins.each do |win| 
-      return true if (player_moves("#{n}") & win).count == Game::WIN_LENGTH
+      return true if (player_moves("#{n}") & win).count == self.win_length
     end
     return false
   end
