@@ -1,0 +1,10 @@
+
+<% @friend = @friendship.friend %>
+<h1> <%= @friend.username %> </h1>
+
+<div id = "user_show_email"> Email: <%= @friend.email %> </div>
+<div id = "user_show_account"> <%= link_to 'Unfriend', @friendship, method: :delete, confirm: "Do you want to unfriend #{@friend.username}?" %> </div>
+
+<div id = "user_show_games_won"> Won: <%= @friend.games_won %> </div>
+<div id = "user_show_games_drawn"> Drawn: <%= @friend.games_drawn %> </div>
+<div id = "user_show_games_lost"> Lost: <%= @friend.games_lost %> </div>

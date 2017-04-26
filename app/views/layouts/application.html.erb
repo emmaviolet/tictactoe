@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TicTacToe
+  </title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+  <link href='http://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
+</head>
+<body>
+
+  <div id = "login_bar">
+    <% if current_user && current_user.role != "guest" %>
+    <% @user = current_user %>
+    <div class = "user_name"> 
+      <%= current_user.username %> 
+    </div>
+    <div class = "user_account"> 
+      <%= link_to 'Account', user_path(@user) %> 
+    </div>
+    <div class = "user_login"> 
+      <%= link_to 'Logout', logout_path %> 
+    </div>
+    <% else %>
+    <div class = "user_name">
+      Guest
+    </div>
+    <div class = "user_account">
+      <%= link_to 'Create Account', new_user_path %>
+    </div>
+    <div class = "user_login">
+      <%= link_to 'Login', new_session_path %>
+    </div>
+    <% end %>
+  </div>
+
+  <div id = "nav_bar">
+    <div class = "nav_new">
+      <%= link_to 'New Game', root_path %>
+    </div>
+    <div class = "nav_pass">
+      <%= link_to 'Pass&Play', new_game_path(game_type: 'pass') %>
+    </div>
+    <div class = "nav_computer">
+      <%= link_to 'Play Computer', new_game_path(game_type: 'computer') %>
+    </div>
+    <% if current_user && current_user.role != "guest" %>
+    <div class = "nav_friend">
+      <%= link_to 'Play A Friend', new_game_path(game_type: 'friend') %>
+    </div>
+    <% end %>
+  </div>
+
+  <div id = "main">
+    <%= yield %>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+<div id = "user_show_container">
+
+  <h1>How much of a challenge are you after?
+  </h1>
+  <div id = "friends_form">
+    <ul>
+      <%= form_for @game, url: games_new_computer_path, method: :put do |g| %>
+      <% Game::COMPUTER_HASH.each do |k, v| %>
+      <li><%= radio_button(:difficulty, :difficulty, v) %>
+        <%= label :difficulty, k %>
+      </li>
+      <% end %>
+
+
+      <%= g.hidden_field :game_id, :value => @game.id %>
+
+      <li><%= g.submit "Choose" %>
+      </li>
+    </ul>
+
+    <% end %>
+  </div>
+</div>

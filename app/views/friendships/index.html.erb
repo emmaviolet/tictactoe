@@ -1,0 +1,24 @@
+<table>
+  <tr>
+    <th>Username
+    </th>
+    <th>Email
+    </th>
+  </tr>
+
+  <tr>
+
+    <% @friendships.each do |friendship| %>
+    <% @friend = friendship.try(:friend) %>
+    <% @friendship = friendship %>
+    <td><%= "#{@friend.try(:username)}" %>
+    </td>
+    <td><%= "#{@friend.try(:email)}" %>
+    </td>
+    <td><%= link_to 'delete', Friendship.find(@friendship.id), method: :delete, confirm: 'Do you want to delete this friend?' %>
+    </td>
+    <% end %>
+    <br>
+  </tr>
+
+</table>

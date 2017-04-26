@@ -1,0 +1,99 @@
+<div id = "user_show_container">
+
+  <h1> <%= "#{@user.username}'s Account Details" %>
+  </h1>
+
+  <div id = "user_show_email"> Email: <%= @user.email %>
+  </div>
+  <div id = "user_show_account"> <%= link_to 'Edit Account', edit_user_path(@user) %>
+  </div>
+
+  <div id = "user_show_games_won"> Won: <%= @user.games_won %>
+  </div>
+  <div id = "user_show_games_drawn"> Drawn: <%= @user.games_drawn %>
+  </div>
+  <div id = "user_show_games_lost"> Lost: <%= @user.games_lost %>
+  </div>
+
+  <div id = "user_show_active_games_container">
+    <div id = "user_show_active_games_header"> Active games:
+    </div>
+
+    <table>
+      <tr>
+        <th>Game
+        </th>
+        <th>Game Type
+        </th>
+        <th>Player 1
+        </th>
+        <th>Player 2
+        </th>
+      </tr>
+
+      <% user_games = (@user.games).uniq %>
+      <% user_games.each do |game| %>
+      <tr>
+        <% if (game.result == "active" || game.result == "expanding") && game.moves.count > 0 %>
+        <td><%= link_to "Game #{game.id}", game_path(game) %>
+        </td>
+        <td><%= "Pass & Play" if "#{game.game_type}" == 'pass' %>
+          <%= "Computer" if "#{game.game_type}" == 'computer' %>
+          <%= "Challenge" if "#{game.game_type}" == 'friend' %>
+        </td>
+        <td><%= "#{game.player_1.try(:username)}" %>
+        </td>
+        <td><%= "#{game.player_2.try(:username)}" %>
+        </td>
+        <% if game.next_player == @user.id && game.result == "active" %>
+        <td id="play_link"><%= link_to "Play", game_path(game) %>
+        </td>
+        <% end %>
+        <% end %>
+      </tr>
+      <% end %>
+    </div>
+    <br>
+
+  </table>
+
+  <div id = "user_show_friends_container">
+    <div id = "user_show_friends_header">Friends:
+    </div>
+    <div id = "user_show_friends_link"><%= link_to 'New Friend', new_friendship_path %>
+    </div>
+    <div id = "user_show_friend_names">
+      <% if @user.friendships.any? %>
+      <% if @user.friendships.count > 1 %>
+
+      <% first_friendship_array = [] %>
+      <% first_friendship_array << @user.friendships.first %>
+      <% friendships = @user.friendships.all - first_friendship_array %>
+      <% first_friendship = @user.friendships.first %>
+      <% friendships.each do |friendship| %>
+      <% @friendship = friendship %>
+      <% if @friendship.friend != nil && @friendship.friend != "" %>
+      <%= link_to "#{@friendship.friend.username},  ", friendship_path(@friendship) %>
+      <% end %>
+      <% end %>
+      and <%= link_to "#{first_friendship.friend.username}", friendship_path(first_friendship) %>
+      <% end %>
+
+      <% if @user.friendships.count == 1 %>
+      <% friendships = @user.friendships.all %>
+      <% friendships.each do |friendship| %>
+      <% @friendship = friendship %>
+      <% if @friendship.friend != nil && @friendship.friend != "" %>
+      <%= link_to "#{@friendship.friend.username}", friendship_path(@friendship) %>
+      <% end %>
+      <% end %>
+      <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <%if can? :read, :all %>
+  <%=link_to 'All Accounts', users_path %>
+  <% end %>
+
+</div>

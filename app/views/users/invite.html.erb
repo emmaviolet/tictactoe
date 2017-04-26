@@ -1,0 +1,13 @@
+<div id = "user_show_container">
+  <%= form_for @user, url: user_invite_path, method: :put do |f| %>
+
+  <%= f.label :name %>
+  <%= f.text_field :name %><br>
+
+  <%= f.label :email %>
+  <%= f.text_field :email %><br>
+
+  <%= f.submit %>
+
+  <% end %>
+</div>
