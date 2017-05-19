@@ -6,7 +6,7 @@ gem 'rails', '3.2.19'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3'
-gem 'cancancan', '~> 1.9'
+gem 'cancancan', '~> 2.0'
 
 # Gems used only for assets and not required
 # in production environments by default.
