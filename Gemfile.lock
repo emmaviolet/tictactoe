@@ -42,7 +42,7 @@ GEM
       columnize (~> 0.8)
       debugger-linecache (~> 1.2)
       slop (~> 3.6)
-    cancancan (1.9.2)
+    cancancan (2.1.2)
     coderay (1.1.0)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
@@ -141,7 +141,7 @@ DEPENDENCIES
   bcrypt-ruby (~> 3.0.0)
   better_errors
   binding_of_caller
-  cancancan (~> 1.9)
+  cancancan (~> 2.1)
   coffee-rails (~> 3.2.1)
   jquery-rails
   letter_opener
