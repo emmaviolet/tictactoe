@@ -65,7 +65,7 @@ class Game < ActiveRecord::Base
 
   def first_array
     return ["Me", "Computer"] if self.game_type == "computer"
-    return ["Me", "Them"] if self.game_type == "friend"
+    return ["Me", "Friend"] if self.game_type == "friend"
   end
 
   def find_board_size
